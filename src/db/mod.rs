@@ -125,16 +125,16 @@ impl DeviceLog {
 
 impl DeviceState {
     pub async fn insert(&self, client: &Client) -> Result<()> {
-        // Convert alerts to JSONB string
-        let alerts_json = self.alerts.as_ref().map(|a| a.to_string());
+        // Convert alerts to JSONB - use proper JSONB format
+        let alerts_json: Option<serde_json::Value> = self.alerts.clone();
 
         client
             .execute(
-                "INSERT INTO device_states (timestamp, device_id, topic, main_state, secondary_state, alerts, rssi) VALUES ($1, $2, $3, $4, $5, $6, $7)",
+                "INSERT INTO device_states (timestamp, device_id, topic, main_state, secondary_state, alerts, rssi) VALUES ($1, $2, $3, $4, $5, $6::jsonb, $7)",
                 &[&self.timestamp, &self.device_id, &self.topic, &self.main_state, &self.secondary_state, &alerts_json, &self.rssi],
             )
             .await
-            .with_context(|| "Failed to insert device state")?;
+            .with_context(|| format!("Failed to insert device state for device {} - timestamp: {}, main_state: {:?}, secondary_state: {:?}", self.device_id, self.timestamp, self.main_state, self.secondary_state))?;
 
         info!(
             "Inserted device state: device={}, main_state={:?}, rssi={:?}",

@@ -248,13 +248,21 @@ fn parse_device_state_and_health(
     let device_id = extract_device_id(topic, json)?;
     let timestamp = extract_timestamp(json);
 
-    // Parse device state
+    // Parse device state (support both snake_case and camelCase)
     let device_state = DeviceState {
         device_id: device_id.clone(),
         topic: topic.to_string(),
-        main_state: json.get("main_state").and_then(|v| v.as_i64()).map(|v| v as i32),
-        secondary_state: json.get("secondary_state").and_then(|v| v.as_i64()).map(|v| v as i32),
-        alerts: json.get("alerts").cloned(),
+        main_state: json.get("main_state")
+            .or_else(|| json.get("mainState"))
+            .and_then(|v| v.as_i64())
+            .map(|v| v as i32),
+        secondary_state: json.get("secondary_state")
+            .or_else(|| json.get("secondaryState"))
+            .and_then(|v| v.as_i64())
+            .map(|v| v as i32),
+        alerts: json.get("alerts")
+            .or_else(|| json.get("state"))
+            .cloned(),
         rssi: json.get("rssi").and_then(|v| v.as_i64()).map(|v| v as i32),
         timestamp,
     };
