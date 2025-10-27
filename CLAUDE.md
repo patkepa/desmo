@@ -18,16 +18,16 @@ The bridge automatically detects and parses sensor readings, device logs, and ra
 cargo build --release
 
 # Generate a configuration file
-./target/release/desmo-bridge config
+./target/release/desmo config
 
 # Start the bridge with default config
-./target/release/desmo-bridge start
+./target/release/desmo start
 
 # Start with custom config
-./target/release/desmo-bridge start --config /path/to/config.toml
+./target/release/desmo start --config /path/to/config.toml
 
 # Start with CLI overrides
-./target/release/desmo-bridge start --mqtt-host localhost --mqtt-port 1883 --db-url "postgresql://admin:admin@localhost:5432/metrics"
+./target/release/desmo start --mqtt-host localhost --mqtt-port 1883 --db-url "postgresql://admin:admin@localhost:5432/metrics"
 ```
 
 ### Docker Infrastructure
@@ -54,7 +54,7 @@ docker compose down -v
 ### Development
 ```bash
 # Run with debug logging
-RUST_LOG=debug ./target/release/desmo-bridge start
+RUST_LOG=debug ./target/release/desmo start
 
 # Build for development
 cargo build

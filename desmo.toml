@@ -1,0 +1,13 @@
+[mqtt]
+host = "localhost"
+port = 1883
+client_id = "desmo"
+topics = [
+    "debug/diagnostics/#",
+    "diagnostics/logs/+",
+    "telemetry/#",
+]
+qos = 0
+
+[database]
+url = "postgresql://admin:admin@localhost:5432/metrics"

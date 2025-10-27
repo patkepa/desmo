@@ -27,7 +27,7 @@ impl Default for Config {
             mqtt: MqttConfig {
                 host: "localhost".to_string(),
                 port: 1883,
-                client_id: "desmo-bridge".to_string(),
+                client_id: "desmo".to_string(),
                 topics: vec![
                     "debug/diagnostics/#".to_string(),
                     "diagnostics/logs/+".to_string(),

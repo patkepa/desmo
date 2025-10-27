@@ -1,5 +1,5 @@
 [package]
-name = "desmo-bridge"
+name = "desmo"
 version = "0.1.0"
 edition = "2021"
 authors = ["Connected Innovations LTD"]

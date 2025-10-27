@@ -40,15 +40,15 @@ docker compose ps
 cargo build --release
 
 # Generate a configuration file
-./target/release/desmo-bridge config
+./target/release/desmo config
 
 # Edit desmo.toml if needed, then start the bridge
-./target/release/desmo-bridge start
+./target/release/desmo start
 ```
 
 Alternatively, with custom settings:
 ```bash
-./target/release/desmo-bridge start --mqtt-host localhost --mqtt-port 1883 --db-url "postgresql://admin:admin@localhost:5432/metrics"
+./target/release/desmo start --mqtt-host localhost --mqtt-port 1883 --db-url "postgresql://admin:admin@localhost:5432/metrics"
 ```
 
 ### Access the Services
@@ -178,7 +178,7 @@ The bridge uses a TOML configuration file (default: `desmo.toml`):
 [mqtt]
 host = "localhost"
 port = 1883
-client_id = "desmo-bridge"
+client_id = "desmo"
 qos = 0
 topics = [
     "debug/diagnostics/#",
@@ -239,23 +239,23 @@ Any plain text message is automatically parsed as a log entry with level inferre
 
 ```bash
 # Start with default config
-desmo-bridge start
+desmo start
 
 # Start with custom config file
-desmo-bridge start --config /path/to/config.toml
+desmo start --config /path/to/config.toml
 
 # Override config via CLI
-desmo-bridge start --mqtt-host 192.168.1.100 --mqtt-port 1883
+desmo start --mqtt-host 192.168.1.100 --mqtt-port 1883
 
 # Generate sample config
-desmo-bridge config --output my-config.toml
+desmo config --output my-config.toml
 ```
 
 ### Environment Variables
 
 Set `RUST_LOG` for detailed logging:
 ```bash
-RUST_LOG=debug desmo-bridge start
+RUST_LOG=debug desmo start
 ```
 
 ## Development

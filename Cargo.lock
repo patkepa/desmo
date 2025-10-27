@@ -252,7 +252,7 @@ dependencies = [
 ]
 
 [[package]]
-name = "desmo-bridge"
+name = "desmo"
 version = "0.1.0"
 dependencies = [
  "anyhow",
