@@ -102,7 +102,7 @@ services:
     networks:
       - desmo-network
     healthcheck:
-      test: ["CMD-SHELL", "wget -q --spider http://localhost:8081 || exit 1"]
+      test: ["CMD-SHELL", "nc -z localhost 1883 || exit 1"]
       interval: 5s
       timeout: 3s
       retries: 10

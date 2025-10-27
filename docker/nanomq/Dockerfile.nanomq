@@ -1,7 +1,7 @@
 FROM docker.io/emqx/nanomq:latest
 
-# Install wget for health checks
-RUN apk add --no-cache wget
+# Install tools for health checks
+RUN apk add --no-cache wget netcat-openbsd curl
 
 # Default MQTT port
 EXPOSE 1883
