@@ -1,1 +1,0 @@
-/var/home/patkepa/Projects/ci-tool-cito/desmo/target/release/desmo-bridge: /var/home/patkepa/Projects/ci-tool-cito/desmo/src/config/mod.rs /var/home/patkepa/Projects/ci-tool-cito/desmo/src/db/mod.rs /var/home/patkepa/Projects/ci-tool-cito/desmo/src/main.rs /var/home/patkepa/Projects/ci-tool-cito/desmo/src/mqtt/mod.rs /var/home/patkepa/Projects/ci-tool-cito/desmo/src/parser/mod.rs

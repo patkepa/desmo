@@ -38,3 +38,4 @@ docker/postgres-data/
 # Backup files
 *.backup
 *.bak
+target/
