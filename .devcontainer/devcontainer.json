@@ -1,8 +1,8 @@
 {
   "name": "Desmo Rust Development",
-  "dockerFile": "Dockerfile",
+  "dockerComposeFile": "docker-compose.yml",
+  "service": "devcontainer",
   "workspaceFolder": "/workspace",
-  "workspaceMount": "source=${localWorkspaceFolder},target=/workspace,type=bind",
 
   "features": {
     "ghcr.io/devcontainers/features/git:1": {},
@@ -11,6 +11,10 @@
       "username": "vscode",
       "userUid": "1000",
       "userGid": "1000"
+    },
+    "ghcr.io/devcontainers/features/docker-outside-of-docker:1": {
+      "moby": true,
+      "dockerDashComposeVersion": "v2"
     }
   },
 
@@ -30,11 +34,6 @@
   },
 
   "postCreateCommand": "/workspace/.devcontainer/post-create.sh",
-
-  "mounts": [
-    "type=volume,source=desmo-cargo-cache,target=/usr/local/cargo/registry",
-    "type=volume,source=desmo-target-cache,target=/workspace/target"
-  ],
 
   "capAdd": ["SYS_PTRACE"],
   "securityOpt": ["seccomp=unconfined"],

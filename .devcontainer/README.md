@@ -1,81 +1,92 @@
 # Desmo DevContainer
 
-Simplified Rust development environment for the Desmo MQTT to TimescaleDB bridge.
+Complete Rust development environment for Desmo MQTT to TimescaleDB bridge with all services included.
 
-## Quick Start
+## Quick Start (Single Command!)
 
 ```bash
-# First time (builds container - takes 2-3 minutes)
+# First time - builds and starts everything (takes 3-5 minutes)
 devpod up . --ide none
 
 # Connect to container
 devpod ssh .
 
-# Inside container - build Desmo
-cargo build
-
-# Use Desmo Bridge
-cargo run -- --help                  # Show help
-cargo run -- --config desmo.toml     # Run with config file
+# Inside container - everything is already running!
+# Just configure and run:
+cp desmo.toml.example desmo.toml
+# Edit desmo.toml with your settings (services are at localhost)
+cargo run -- --config desmo.toml
 ```
 
 ## What's Included
 
-- **Rust 1.89** - Latest stable Rust toolchain
-- **Development tools** - clippy, rustfmt, cargo-watch
-- **System dependencies** - Required libraries for Desmo compilation (OpenSSL, etc.)
+Everything you need in one command:
+
+- **Rust 1.89** - Latest stable Rust toolchain with clippy, rustfmt, cargo-watch
+- **TimescaleDB** - PostgreSQL with TimescaleDB extension (localhost:5432)
+- **Grafana** - Data visualization and dashboards (http://localhost:3000)
+- **NanoMQ** - Lightweight MQTT broker (mqtt://localhost:1883)
+- **System dependencies** - OpenSSL, build tools, etc.
+- **Persistent volumes** - Data and build caches are preserved
 
 ## Daily Usage
 
 ```bash
-# Connect (instant if container exists)
+# Connect (instant if container exists - all services auto-start)
 devpod ssh .
 
-# Stop container (preserves it)
+# Stop everything (preserves all data and containers)
 devpod stop .
 
-# Restart stopped container (few seconds)
+# Restart everything (few seconds - services auto-start)
 devpod up . --ide none
 
 # Only rebuild when Dockerfile changes
 devpod up . --ide none --recreate
 ```
 
-## Container Architecture
+## Service Access
 
-- **Desmo Bridge** - Lightweight MQTT to TimescaleDB bridge
-- **Async Runtime** - Uses Tokio for high-performance async I/O
-- **MQTT Client** - rumqttc for MQTT connections
-- **PostgreSQL** - tokio-postgres for TimescaleDB integration
-- Persistent volumes for faster rebuilds
+All services are accessible from both inside the devcontainer and from your host machine:
 
-## Local Development Setup
-
-For full stack development with TimescaleDB, Grafana, and NanoMQ:
-
-1. Start the devcontainer: `devpod up . --ide none`
-2. Connect: `devpod ssh .`
-3. In a separate terminal (on host), start Docker services:
-   ```bash
-   cd docker
-   docker-compose up
-   ```
-4. Inside devcontainer, configure and run Desmo:
-   ```bash
-   cp desmo.toml.example desmo.toml
-   # Edit desmo.toml with your settings
-   cargo run -- --config desmo.toml
-   ```
+- **TimescaleDB**: `localhost:5432` (user: `admin`, password: `admin`, database: `metrics`)
+- **Grafana**: `http://localhost:3000` (user: `admin`, password: `admin`)
+- **NanoMQ MQTT**: `mqtt://localhost:1883`
+- **NanoMQ WebSocket**: `ws://localhost:8083/mqtt`
+- **NanoMQ HTTP API**: `http://localhost:8081`
 
 ## Configuration
 
-- Copy `desmo.toml.example` to `desmo.toml`
-- Configure MQTT broker settings
-- Configure TimescaleDB connection
-- Set up topic mappings and data parsing rules
+Inside the devcontainer:
+
+```bash
+# Copy example config
+cp desmo.toml.example desmo.toml
+
+# Edit configuration - use these connection strings:
+# MQTT: mqtt://nanomq:1883 (or localhost:1883)
+# PostgreSQL: postgresql://admin:admin@timescaledb:5432/metrics (or localhost:5432)
+nano desmo.toml  # or use your preferred editor
+
+# Run Desmo
+cargo run -- --config desmo.toml
+```
+
+## Container Architecture
+
+Everything runs in Docker Compose:
+
+- **devcontainer** - Rust development environment with your code
+- **timescaledb** - PostgreSQL 17 + TimescaleDB extension with pre-initialized schema
+- **grafana** - Enterprise edition with TimescaleDB datasource pre-configured
+- **nanomq** - Lightweight MQTT broker with WebSocket and HTTP API enabled
+
+All services are networked together and start automatically when you run `devpod up`.
 
 ## Troubleshooting
 
-- **First build slow?** Normal - only happens once
+- **First build slow?** Normal - downloading and building all services only happens once
 - **Can't connect?** Try `devpod delete . --force` then `devpod up .`
-- **Database connection issues?** Ensure Docker Compose services are running on the host
+- **Service not responding?** Check status: `docker ps` to see if all containers are healthy
+- **Database connection issues?** Services might still be starting - wait for health checks (30s)
+- **Port conflicts?** Ensure ports 5432, 3000, 1883, 8083, 8081 are not in use on your host

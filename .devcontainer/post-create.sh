@@ -3,6 +3,13 @@ set -e
 
 echo "Setting up Desmo Rust development environment..."
 
+# Check Docker services status
+echo "Checking Docker services..."
+echo "✓ TimescaleDB: $(docker ps --filter "name=desmo-timescaledb" --format "{{.Status}}" | head -n1)"
+echo "✓ Grafana: $(docker ps --filter "name=desmo-grafana" --format "{{.Status}}" | head -n1)"
+echo "✓ NanoMQ: $(docker ps --filter "name=desmo-nanomq" --format "{{.Status}}" | head -n1)"
+echo ""
+
 # Verify Rust installation
 echo "Verifying Rust installation..."
 if command -v cargo >/dev/null 2>&1; then
@@ -49,11 +56,11 @@ if [ -f "Cargo.toml" ]; then
     echo ""
 
     # Docker compose information
-    if [ -d "docker" ]; then
-        echo "🐳 Docker Compose Services:"
-        echo "   cd docker && docker-compose up  - Start TimescaleDB, Grafana, and NanoMQ"
-        echo ""
-    fi
+    echo "🐳 Docker Services (already running):"
+    echo "   TimescaleDB: localhost:5432 (user: admin, password: admin, db: metrics)"
+    echo "   Grafana: http://localhost:3000 (user: admin, password: admin)"
+    echo "   NanoMQ: mqtt://localhost:1883, ws://localhost:8083, http://localhost:8081"
+    echo ""
 else
     echo "⚠️  No Cargo.toml found - this doesn't appear to be a Rust project"
 fi
@@ -62,5 +69,11 @@ echo "✅ Rust development environment setup complete!"
 echo ""
 echo "💡 Tips:"
 echo "   - Configure desmo using desmo.toml (see desmo.toml.example)"
+echo "   - All services (TimescaleDB, Grafana, NanoMQ) are running and ready"
 echo "   - VS Code Rust extensions are pre-configured"
 echo "   - Cargo registry is cached in volume for faster builds"
+echo ""
+echo "🚀 Quick start:"
+echo "   1. Copy desmo.toml.example to desmo.toml"
+echo "   2. Update connection settings (services are at localhost)"
+echo "   3. Run: cargo run -- --config desmo.toml"
