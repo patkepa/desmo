@@ -3,6 +3,7 @@ host = "nanomq"
 port = 1883
 client_id = "desmo"
 topics = [
+    "test/telemetry",
     "debug/diagnostics/#",
     "diagnostics/logs/+",
     "telemetry/#",

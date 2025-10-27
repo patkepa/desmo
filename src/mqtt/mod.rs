@@ -1,7 +1,7 @@
 use anyhow::{Context, Result};
 use rumqttc::{AsyncClient, Event, EventLoop, MqttOptions, Packet, QoS};
 use tokio_postgres::Client as PgClient;
-use tracing::{error, info};
+use tracing::{debug, error, info};
 
 use crate::config::MqttConfig;
 use crate::parser::{parse_message, ParsedMessage};
@@ -85,13 +85,24 @@ impl MqttBridge {
                 let topic = &publish.topic;
                 let payload = &publish.payload;
 
-                info!("Received message on topic: {}", topic);
+                // Log raw payload
+                match String::from_utf8(payload.to_vec()) {
+                    Ok(payload_str) => {
+                        info!("Received message on topic: {}", topic);
+                        info!("Raw JSON payload: {}", payload_str);
+                    }
+                    Err(_) => {
+                        info!("Received message on topic: {} (binary payload)", topic);
+                    }
+                }
 
                 // Parse the message
                 let parsed_messages = parse_message(topic, payload);
+                debug!("Parsed {} message(s) from topic {}", parsed_messages.len(), topic);
 
                 // Insert into database
                 for message in parsed_messages {
+                    debug!("Inserting parsed message: {:?}", message);
                     if let Err(e) = self.insert_message(message).await {
                         error!("Failed to insert message: {}", e);
                     }

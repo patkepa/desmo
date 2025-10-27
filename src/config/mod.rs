@@ -29,6 +29,7 @@ impl Default for Config {
                 port: 1883,
                 client_id: "desmo".to_string(),
                 topics: vec![
+                    "test/telemetry".to_string(),
                     "debug/diagnostics/#".to_string(),
                     "diagnostics/logs/+".to_string(),
                     "telemetry/#".to_string(),
