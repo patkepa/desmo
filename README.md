@@ -355,3 +355,8 @@ See [LICENSE](LICENSE) file for details.
 ## Contributing
 
 Contributions are welcome! Please open an issue or pull request.
+
+
+
+
+❯ devpod up . --ide none
