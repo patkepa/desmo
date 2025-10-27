@@ -35,6 +35,9 @@ docker/postgres-data/
 .idea/
 *.sublime-*
 
+# DevPod
+.devpod-internal/
+
 # Backup files
 *.backup
 *.bak
