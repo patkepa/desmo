@@ -1,0 +1,43 @@
+{
+  "name": "Desmo Rust Development",
+  "dockerFile": "Dockerfile",
+  "workspaceFolder": "/workspace",
+  "workspaceMount": "source=${localWorkspaceFolder},target=/workspace,type=bind",
+
+  "features": {
+    "ghcr.io/devcontainers/features/git:1": {},
+    "ghcr.io/devcontainers/features/common-utils:2": {
+      "installZsh": false,
+      "username": "vscode",
+      "userUid": "1000",
+      "userGid": "1000"
+    }
+  },
+
+  "customizations": {
+    "vscode": {
+      "extensions": [
+        "rust-lang.rust-analyzer",
+        "vadimcn.vscode-lldb",
+        "serayuzgur.crates",
+        "tamasfe.even-better-toml"
+      ],
+      "settings": {
+        "rust-analyzer.checkOnSave.command": "clippy",
+        "terminal.integrated.defaultProfile.linux": "bash"
+      }
+    }
+  },
+
+  "postCreateCommand": "/workspace/.devcontainer/post-create.sh",
+
+  "mounts": [
+    "type=volume,source=desmo-cargo-cache,target=/usr/local/cargo/registry",
+    "type=volume,source=desmo-target-cache,target=/workspace/target"
+  ],
+
+  "capAdd": ["SYS_PTRACE"],
+  "securityOpt": ["seccomp=unconfined"],
+
+  "remoteUser": "vscode"
+}
