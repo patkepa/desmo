@@ -2,7 +2,7 @@ use chrono::Utc;
 use serde_json::Value;
 use tracing::{debug, warn};
 
-use crate::db::{DeviceLog, SensorReading, SocketRead};
+use crate::db::{DeviceHealth, DeviceLog, DeviceState, SensorReading, SocketRead};
 
 /// Parse MQTT message into database records
 pub fn parse_message(topic: &str, payload: &[u8]) -> Vec<ParsedMessage> {
@@ -26,14 +26,22 @@ pub fn parse_message(topic: &str, payload: &[u8]) -> Vec<ParsedMessage> {
 
     // Try to parse as JSON
     if let Ok(json) = serde_json::from_str::<Value>(&payload_str) {
-        // Parse sensor readings
-        if let Some(readings) = parse_sensor_readings(topic, &json) {
-            results.extend(readings.into_iter().map(ParsedMessage::SensorReading));
-        }
+        // Parse device state and health (priority - most specific format)
+        if let Some((state, health)) = parse_device_state_and_health(topic, &json) {
+            results.push(ParsedMessage::DeviceState(state));
+            if let Some(h) = health {
+                results.push(ParsedMessage::DeviceHealth(h));
+            }
+        } else {
+            // Parse sensor readings
+            if let Some(readings) = parse_sensor_readings(topic, &json) {
+                results.extend(readings.into_iter().map(ParsedMessage::SensorReading));
+            }
 
-        // Parse device logs
-        if let Some(log) = parse_device_log(topic, &json) {
-            results.push(ParsedMessage::DeviceLog(log));
+            // Parse device logs
+            if let Some(log) = parse_device_log(topic, &json) {
+                results.push(ParsedMessage::DeviceLog(log));
+            }
         }
     } else {
         // Try to parse as plain text log
@@ -51,6 +59,8 @@ pub enum ParsedMessage {
     SensorReading(SensorReading),
     SocketRead(SocketRead),
     DeviceLog(DeviceLog),
+    DeviceState(DeviceState),
+    DeviceHealth(DeviceHealth),
 }
 
 /// Parse JSON sensor readings
@@ -209,4 +219,73 @@ fn extract_timestamp(json: &Value) -> chrono::DateTime<Utc> {
     }
 
     Utc::now()
+}
+
+/// Parse device state and health from JSON
+/// Expected format:
+/// {
+///   "main_state": 1,
+///   "secondary_state": 0,
+///   "alerts": {},
+///   "rssi": -29,
+///   "health": "{\"general\":{\"wifiSsid\":\"GL-S200-33f\",\"freeHeapSize\":57940,...}}"
+/// }
+fn parse_device_state_and_health(
+    topic: &str,
+    json: &Value,
+) -> Option<(DeviceState, Option<DeviceHealth>)> {
+    // Check if this looks like a device state message
+    // It should have at least one of: main_state, secondary_state, alerts, rssi
+    let has_state_fields = json.get("main_state").is_some()
+        || json.get("secondary_state").is_some()
+        || json.get("alerts").is_some()
+        || json.get("rssi").is_some();
+
+    if !has_state_fields {
+        return None;
+    }
+
+    let device_id = extract_device_id(topic, json)?;
+    let timestamp = extract_timestamp(json);
+
+    // Parse device state
+    let device_state = DeviceState {
+        device_id: device_id.clone(),
+        topic: topic.to_string(),
+        main_state: json.get("main_state").and_then(|v| v.as_i64()).map(|v| v as i32),
+        secondary_state: json.get("secondary_state").and_then(|v| v.as_i64()).map(|v| v as i32),
+        alerts: json.get("alerts").cloned(),
+        rssi: json.get("rssi").and_then(|v| v.as_i64()).map(|v| v as i32),
+        timestamp,
+    };
+
+    // Parse health data if present
+    let device_health = json.get("health").and_then(|health_value| {
+        // Health can be a string (JSON encoded) or direct object
+        let health_json = if let Some(health_str) = health_value.as_str() {
+            serde_json::from_str::<Value>(health_str).ok()?
+        } else {
+            health_value.clone()
+        };
+
+        // Extract general health data
+        let general = health_json.get("general")?;
+
+        Some(DeviceHealth {
+            device_id: device_id.clone(),
+            topic: topic.to_string(),
+            wifi_ssid: general.get("wifiSsid").and_then(|v| v.as_str()).map(|s| s.to_string()),
+            free_heap_size: general.get("freeHeapSize").and_then(|v| v.as_i64()),
+            min_heap_size: general.get("minHeapSize").and_then(|v| v.as_i64()),
+            unexpected_reset_counter: general.get("unexpectedResetCounter").and_then(|v| v.as_i64()).map(|v| v as i32),
+            last_reset_reason: general.get("lastResetReason").and_then(|v| v.as_str()).map(|s| s.to_string()),
+            wifi_connect_counter: general.get("wifiConnectCounter").and_then(|v| v.as_i64()).map(|v| v as i32),
+            cloud_connect_counter: general.get("cloudConnectCounter").and_then(|v| v.as_i64()).map(|v| v as i32),
+            last_wifi_connection_ts: general.get("lastWifiConnectionTs").and_then(|v| v.as_i64()),
+            last_cloud_connection_ts: general.get("lastCloudConnectionTs").and_then(|v| v.as_i64()),
+            timestamp,
+        })
+    });
+
+    Some((device_state, device_health))
 }

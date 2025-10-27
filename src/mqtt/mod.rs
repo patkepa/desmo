@@ -125,6 +125,12 @@ impl MqttBridge {
             ParsedMessage::DeviceLog(log) => {
                 log.insert(&self.db_client).await?;
             }
+            ParsedMessage::DeviceState(state) => {
+                state.insert(&self.db_client).await?;
+            }
+            ParsedMessage::DeviceHealth(health) => {
+                health.insert(&self.db_client).await?;
+            }
         }
 
         Ok(())

@@ -42,6 +42,33 @@ pub struct DeviceLog {
     pub timestamp: DateTime<Utc>,
 }
 
+#[derive(Debug)]
+pub struct DeviceState {
+    pub device_id: String,
+    pub topic: String,
+    pub main_state: Option<i32>,
+    pub secondary_state: Option<i32>,
+    pub alerts: Option<serde_json::Value>,
+    pub rssi: Option<i32>,
+    pub timestamp: DateTime<Utc>,
+}
+
+#[derive(Debug)]
+pub struct DeviceHealth {
+    pub device_id: String,
+    pub topic: String,
+    pub wifi_ssid: Option<String>,
+    pub free_heap_size: Option<i64>,
+    pub min_heap_size: Option<i64>,
+    pub unexpected_reset_counter: Option<i32>,
+    pub last_reset_reason: Option<String>,
+    pub wifi_connect_counter: Option<i32>,
+    pub cloud_connect_counter: Option<i32>,
+    pub last_wifi_connection_ts: Option<i64>,
+    pub last_cloud_connection_ts: Option<i64>,
+    pub timestamp: DateTime<Utc>,
+}
+
 impl SensorReading {
     pub async fn insert(&self, client: &Client) -> Result<()> {
         client
@@ -90,6 +117,47 @@ impl DeviceLog {
         info!(
             "Inserted device log: device={}, level={}, message={}",
             self.device_id, self.level, self.message
+        );
+
+        Ok(())
+    }
+}
+
+impl DeviceState {
+    pub async fn insert(&self, client: &Client) -> Result<()> {
+        // Convert alerts to JSONB string
+        let alerts_json = self.alerts.as_ref().map(|a| a.to_string());
+
+        client
+            .execute(
+                "INSERT INTO device_states (timestamp, device_id, topic, main_state, secondary_state, alerts, rssi) VALUES ($1, $2, $3, $4, $5, $6, $7)",
+                &[&self.timestamp, &self.device_id, &self.topic, &self.main_state, &self.secondary_state, &alerts_json, &self.rssi],
+            )
+            .await
+            .with_context(|| "Failed to insert device state")?;
+
+        info!(
+            "Inserted device state: device={}, main_state={:?}, rssi={:?}",
+            self.device_id, self.main_state, self.rssi
+        );
+
+        Ok(())
+    }
+}
+
+impl DeviceHealth {
+    pub async fn insert(&self, client: &Client) -> Result<()> {
+        client
+            .execute(
+                "INSERT INTO device_health (timestamp, device_id, topic, wifi_ssid, free_heap_size, min_heap_size, unexpected_reset_counter, last_reset_reason, wifi_connect_counter, cloud_connect_counter, last_wifi_connection_ts, last_cloud_connection_ts) VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12)",
+                &[&self.timestamp, &self.device_id, &self.topic, &self.wifi_ssid, &self.free_heap_size, &self.min_heap_size, &self.unexpected_reset_counter, &self.last_reset_reason, &self.wifi_connect_counter, &self.cloud_connect_counter, &self.last_wifi_connection_ts, &self.last_cloud_connection_ts],
+            )
+            .await
+            .with_context(|| "Failed to insert device health")?;
+
+        info!(
+            "Inserted device health: device={}, free_heap={:?}, reset_counter={:?}",
+            self.device_id, self.free_heap_size, self.unexpected_reset_counter
         );
 
         Ok(())
