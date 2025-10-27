@@ -106,10 +106,11 @@ services:
     networks:
       - desmo-network
     healthcheck:
-      test: ["CMD", "nc", "-z", "localhost", "1883"]
-      interval: 10s
-      timeout: 5s
-      retries: 5
+      test: ["CMD-SHELL", "wget -q --spider http://localhost:8081 || exit 1"]
+      interval: 5s
+      timeout: 3s
+      retries: 10
+      start_period: 10s
 
 networks:
   desmo-network:

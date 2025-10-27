@@ -1,5 +1,8 @@
 FROM docker.io/emqx/nanomq:latest
 
+# Install wget for health checks
+RUN apk add --no-cache wget
+
 # Default MQTT port
 EXPOSE 1883
 # WebSocket port
