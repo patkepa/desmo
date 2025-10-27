@@ -210,10 +210,21 @@ fn extract_timestamp(json: &Value) -> chrono::DateTime<Utc> {
             }
         }
 
-        // Try to parse as Unix timestamp (seconds)
+        // Try to parse as Unix timestamp (seconds or milliseconds)
         if let Some(ts_num) = ts.as_i64() {
-            if let Some(dt) = chrono::DateTime::from_timestamp(ts_num, 0) {
-                return dt;
+            // Check if this looks like milliseconds (> year 2100 in seconds = 4102444800)
+            if ts_num > 4102444800 {
+                // Milliseconds - convert to seconds and nanoseconds
+                let secs = ts_num / 1000;
+                let nsecs = ((ts_num % 1000) * 1_000_000) as u32;
+                if let Some(dt) = chrono::DateTime::from_timestamp(secs, nsecs) {
+                    return dt;
+                }
+            } else {
+                // Seconds
+                if let Some(dt) = chrono::DateTime::from_timestamp(ts_num, 0) {
+                    return dt;
+                }
             }
         }
     }
