@@ -1,0 +1,18 @@
+# Desmo Bridge Configuration
+
+[mqtt]
+host = "localhost"
+port = 1883
+client_id = "desmo-bridge"
+qos = 0  # 0 = At most once, 1 = At least once, 2 = Exactly once
+
+# MQTT topics to subscribe to
+# Supports wildcards: + (single level), # (multi-level)
+topics = [
+    "debug/diagnostics/#",
+    "diagnostics/logs/+",
+    "telemetry/#",
+]
+
+[database]
+url = "postgresql://admin:admin@localhost:5432/metrics"

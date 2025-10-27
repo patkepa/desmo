@@ -1,0 +1,21 @@
+FROM docker.io/emqx/nanomq:latest
+
+# Default MQTT port
+EXPOSE 1883
+# WebSocket port
+EXPOSE 8083
+# HTTP API port
+EXPOSE 8081
+
+# Create a basic empty config file
+RUN touch /etc/nanomq.conf
+
+ENV NANOMQ_BROKER_URL=nmq-tcp://0.0.0.0:1883
+ENV NANOMQ_WEBSOCKET_ENABLE=true
+ENV NANOMQ_WEBSOCKET_URL=nmq-ws://0.0.0.0:8083/mqtt
+ENV NANOMQ_HTTP_SERVER_ENABLE=true
+ENV NANOMQ_HTTP_SERVER_PORT=8081
+ENV NANOMQ_ALLOW_ANONYMOUS=true
+
+# Start with environment variables, using empty config file
+CMD ["nanomq", "start"]
