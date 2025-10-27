@@ -24,7 +24,7 @@
     {
       "datasource": {
         "type": "postgres",
-        "uid": "timescaledb"
+        "uid": "P40AE60E18F02DE32"
       },
       "fieldConfig": {
         "defaults": {
@@ -84,7 +84,7 @@
         {
           "datasource": {
             "type": "postgres",
-            "uid": "timescaledb"
+            "uid": "P40AE60E18F02DE32"
           },
           "editorMode": "code",
           "format": "table",
@@ -116,7 +116,7 @@
     {
       "datasource": {
         "type": "postgres",
-        "uid": "timescaledb"
+        "uid": "P40AE60E18F02DE32"
       },
       "fieldConfig": {
         "defaults": {
@@ -193,7 +193,7 @@
         {
           "datasource": {
             "type": "postgres",
-            "uid": "timescaledb"
+            "uid": "P40AE60E18F02DE32"
           },
           "editorMode": "code",
           "format": "time_series",
@@ -225,7 +225,7 @@
     {
       "datasource": {
         "type": "postgres",
-        "uid": "timescaledb"
+        "uid": "P40AE60E18F02DE32"
       },
       "fieldConfig": {
         "defaults": {
@@ -333,7 +333,7 @@
         {
           "datasource": {
             "type": "postgres",
-            "uid": "timescaledb"
+            "uid": "P40AE60E18F02DE32"
           },
           "editorMode": "code",
           "format": "time_series",
@@ -365,7 +365,7 @@
     {
       "datasource": {
         "type": "postgres",
-        "uid": "timescaledb"
+        "uid": "P40AE60E18F02DE32"
       },
       "fieldConfig": {
         "defaults": {
@@ -420,7 +420,7 @@
         {
           "datasource": {
             "type": "postgres",
-            "uid": "timescaledb"
+            "uid": "P40AE60E18F02DE32"
           },
           "editorMode": "code",
           "format": "table",
@@ -452,7 +452,7 @@
     {
       "datasource": {
         "type": "postgres",
-        "uid": "timescaledb"
+        "uid": "P40AE60E18F02DE32"
       },
       "fieldConfig": {
         "defaults": {
@@ -510,7 +510,7 @@
         {
           "datasource": {
             "type": "postgres",
-            "uid": "timescaledb"
+            "uid": "P40AE60E18F02DE32"
           },
           "editorMode": "code",
           "format": "table",
@@ -542,7 +542,7 @@
     {
       "datasource": {
         "type": "postgres",
-        "uid": "timescaledb"
+        "uid": "P40AE60E18F02DE32"
       },
       "fieldConfig": {
         "defaults": {
@@ -600,7 +600,7 @@
         {
           "datasource": {
             "type": "postgres",
-            "uid": "timescaledb"
+            "uid": "P40AE60E18F02DE32"
           },
           "editorMode": "code",
           "format": "table",
@@ -632,7 +632,7 @@
     {
       "datasource": {
         "type": "postgres",
-        "uid": "timescaledb"
+        "uid": "P40AE60E18F02DE32"
       },
       "fieldConfig": {
         "defaults": {
@@ -683,7 +683,7 @@
         {
           "datasource": {
             "type": "postgres",
-            "uid": "timescaledb"
+            "uid": "P40AE60E18F02DE32"
           },
           "editorMode": "code",
           "format": "table",
@@ -715,7 +715,7 @@
     {
       "datasource": {
         "type": "postgres",
-        "uid": "timescaledb"
+        "uid": "P40AE60E18F02DE32"
       },
       "fieldConfig": {
         "defaults": {
@@ -840,7 +840,7 @@
         {
           "datasource": {
             "type": "postgres",
-            "uid": "timescaledb"
+            "uid": "P40AE60E18F02DE32"
           },
           "editorMode": "code",
           "format": "table",
@@ -872,7 +872,7 @@
     {
       "datasource": {
         "type": "postgres",
-        "uid": "timescaledb"
+        "uid": "P40AE60E18F02DE32"
       },
       "fieldConfig": {
         "defaults": {
@@ -988,7 +988,7 @@
         {
           "datasource": {
             "type": "postgres",
-            "uid": "timescaledb"
+            "uid": "P40AE60E18F02DE32"
           },
           "editorMode": "code",
           "format": "time_series",
@@ -1020,7 +1020,7 @@
     {
       "datasource": {
         "type": "postgres",
-        "uid": "timescaledb"
+        "uid": "P40AE60E18F02DE32"
       },
       "fieldConfig": {
         "defaults": {
@@ -1108,7 +1108,7 @@
         {
           "datasource": {
             "type": "postgres",
-            "uid": "timescaledb"
+            "uid": "P40AE60E18F02DE32"
           },
           "editorMode": "code",
           "format": "time_series",
@@ -1140,7 +1140,7 @@
     {
       "datasource": {
         "type": "postgres",
-        "uid": "timescaledb"
+        "uid": "P40AE60E18F02DE32"
       },
       "fieldConfig": {
         "defaults": {
@@ -1247,7 +1247,7 @@
         {
           "datasource": {
             "type": "postgres",
-            "uid": "timescaledb"
+            "uid": "P40AE60E18F02DE32"
           },
           "editorMode": "code",
           "format": "time_series",
