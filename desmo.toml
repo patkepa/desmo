@@ -1,5 +1,5 @@
 [mqtt]
-host = "localhost"
+host = "nanomq"
 port = 1883
 client_id = "desmo"
 topics = [
@@ -10,4 +10,4 @@ topics = [
 qos = 0
 
 [database]
-url = "postgresql://admin:admin@localhost:5432/metrics"
+url = "postgresql://admin:admin@timescaledb:5432/metrics"
