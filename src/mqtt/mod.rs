@@ -85,24 +85,14 @@ impl MqttBridge {
                 let topic = &publish.topic;
                 let payload = &publish.payload;
 
-                // Log raw payload
-                match String::from_utf8(payload.to_vec()) {
-                    Ok(payload_str) => {
-                        info!("Received message on topic: {}", topic);
-                        info!("Raw JSON payload: {}", payload_str);
-                    }
-                    Err(_) => {
-                        info!("Received message on topic: {} (binary payload)", topic);
-                    }
-                }
+                // Log at debug level only
+                debug!("Received message on topic: {}", topic);
 
                 // Parse the message
                 let parsed_messages = parse_message(topic, payload);
-                debug!("Parsed {} message(s) from topic {}", parsed_messages.len(), topic);
 
                 // Insert into database
                 for message in parsed_messages {
-                    debug!("Inserting parsed message: {:?}", message);
                     if let Err(e) = self.insert_message(message).await {
                         error!("Failed to insert message: {}", e);
                     }

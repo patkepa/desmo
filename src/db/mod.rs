@@ -1,7 +1,7 @@
 use anyhow::{Context, Result};
 use chrono::{DateTime, Utc};
 use tokio_postgres::{Client, NoTls};
-use tracing::{error, info};
+use tracing::{debug, error};
 
 pub async fn connect(database_url: &str) -> Result<Client> {
     let (client, connection) = tokio_postgres::connect(database_url, NoTls)
@@ -79,7 +79,7 @@ impl SensorReading {
             .await
             .with_context(|| "Failed to insert sensor reading")?;
 
-        info!(
+        debug!(
             "Inserted sensor reading: device={}, topic={}, value={}",
             self.device_id, self.topic, self.value
         );
@@ -98,7 +98,7 @@ impl SocketRead {
             .await
             .with_context(|| "Failed to insert socket read")?;
 
-        info!("Inserted socket read: topic={}", self.topic);
+        debug!("Inserted socket read: topic={}", self.topic);
 
         Ok(())
     }
@@ -114,7 +114,7 @@ impl DeviceLog {
             .await
             .with_context(|| "Failed to insert device log")?;
 
-        info!(
+        debug!(
             "Inserted device log: device={}, level={}, message={}",
             self.device_id, self.level, self.message
         );
@@ -136,7 +136,7 @@ impl DeviceState {
             .await
             .with_context(|| format!("Failed to insert device state for device {} - timestamp: {}, main_state: {:?}, secondary_state: {:?}", self.device_id, self.timestamp, self.main_state, self.secondary_state))?;
 
-        info!(
+        debug!(
             "Inserted device state: device={}, main_state={:?}, rssi={:?}",
             self.device_id, self.main_state, self.rssi
         );
@@ -155,7 +155,7 @@ impl DeviceHealth {
             .await
             .with_context(|| "Failed to insert device health")?;
 
-        info!(
+        debug!(
             "Inserted device health: device={}, free_heap={:?}, reset_counter={:?}",
             self.device_id, self.free_heap_size, self.unexpected_reset_counter
         );
